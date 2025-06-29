@@ -36,10 +36,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-            print(1)
-        if event.type == pygame.MOUSEMOTION:
-           player_rect.center = event.pos
+        # if event.type == pygame.KEYDOWN and event.key == pygame.K_1:
+        #     print(1)
+        # if event.type == pygame.MOUSEMOTION:
+        #    player_rect.center = event.pos
+
+    # input
+    # print(pygame.mouse.get_rel())
+    keys = pygame.key.get_pressed()
+    player_direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
+    player_direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
+    player_direction = player_direction.normalize() if player_direction else player_direction
+    player_rect.center += player_direction * player_speed * dt
+
+    recent_keys = pygame.key.get_just_pressed()
+    if recent_keys[pygame.K_SPACE]:
+        print('fire laser')
 
     # draw the game
     display_surface.fill('darkgray')
