@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
 
         recent_keys = pygame.key.get_just_pressed()
         if recent_keys[pygame.K_SPACE] and self.can_shoot:
-            Laser(laser_surf, self.rect.midtop, all_sprites)
+            Laser(laser_surf, self.rect.midtop, (all_sprites, laser_sprites))
             self.can_shoot = False
             self.laser_shoot_time = pygame.time.get_ticks()
 
@@ -76,18 +76,22 @@ class Meteor(pygame.sprite.Sprite):
 
 
 def collisions():
-    global running
+    global running, bg_color, collision_occurred
 
     collision_sprites = pygame.sprite.spritecollide(player, meteor_sprites, True)
     if collision_sprites:
         print("Player hit by meteor!")
         running = False
+        collision_occurred = True
+        bg_color = 'red'   # flash background
 
     for laser in laser_sprites:
         collided_sprites = pygame.sprite.spritecollide(laser, meteor_sprites, True)
         if collided_sprites:
             print("Laser hit meteor!")
             laser.kill()
+            collision_occurred = True
+            bg_color = 'yellow'   # flash background
 
 
 # general setup
@@ -97,6 +101,8 @@ display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Space shooter')
 running = True
 clock = pygame.time.Clock()
+bg_color = 'darkgray'
+collision_occurred = False
 
 # # plain surface
 # surf = pygame.Surface((100, 200))
@@ -130,13 +136,17 @@ while running:
             running = False
         if event.type == meteor_event:
             x, y = randint(0, WINDOW_WIDTH), randint(-200, -100)
-            Meteor(meteor_surf, (x, y), all_sprites)
+            Meteor(meteor_surf, (x, y), (all_sprites, meteor_sprites))
 
     # update
     all_sprites.update(dt)
     collisions()
 
-    display_surface.fill('darkgray')
+    display_surface.fill(bg_color)
+    # (reset bg_color to 'darkgray' after drawing, if you want a quick flash)
+    if collision_occurred:
+        bg_color = 'darkgray'
+        collision_occurred = False
     all_sprites.draw(display_surface)
 
     pygame.display.update()
