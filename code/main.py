@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load(join('..', 'images', 'player.png')).convert_alpha()
         self.rect = self.image.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
         self.direction = pygame.Vector2()
-        self.speed = 1500
+        self.speed = 500
 
         # cooldown
         self.can_shoot = True
@@ -104,7 +104,8 @@ meteor_event = pygame.event.custom_type()
 pygame.time.set_timer(meteor_event, 500)
 
 while running:
-    dt = clock.tick() / 500
+    dt = clock.tick(60) / 1000  # Use 60 FPS cap, and /1000 for seconds
+
     # event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -112,10 +113,9 @@ while running:
         if event.type == meteor_event:
             x, y = randint(0, WINDOW_WIDTH), randint(-200, -100)
             Meteor(meteor_surf, (x, y), all_sprites)
-        # update
-        all_sprites.update(dt)
 
     # draw the game
+    all_sprites.update(dt)
     display_surface.fill('darkgray')
     all_sprites.draw(display_surface)
     pygame.display.update()
