@@ -40,6 +40,13 @@ class Player(pygame.sprite.Sprite):
         #     print('fire laser')
 
 
+class Star(pygame.sprite.Sprite):
+    def __init__(self, groups, surf):
+        super().__init__(groups)
+        self.image = surf
+        self.rect = self.image.get_frect(center=(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)))
+
+
 class Laser(pygame.sprite.Sprite):
     def __init__(self, surf, pos, groups):
         super().__init__(groups)
@@ -50,13 +57,6 @@ class Laser(pygame.sprite.Sprite):
         self.rect.centery -= 400 * dt
         if self.rect.bottom < 0:
             self.kill()
-
-
-class Star(pygame.sprite.Sprite):
-    def __init__(self, groups, surf):
-        super().__init__(groups)
-        self.image = surf
-        self.rect = self.image.get_frect(center=(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)))
 
 
 class Meteor(pygame.sprite.Sprite):
@@ -75,6 +75,19 @@ class Meteor(pygame.sprite.Sprite):
             self.kill()
 
 
+def collisions():
+    global running
+
+    collision_sprites = pygame.sprite.spritecollide(player, meteor_sprites, True)
+    if collision_sprites:
+        running = False
+
+    for laser in laser_sprites:
+        collided_sprites = pygame.sprite.spritecollide(laser, meteor_sprites, True)
+        if collided_sprites:
+            laser.kill()
+
+
 # general setup
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -83,10 +96,10 @@ pygame.display.set_caption('Space shooter')
 running = True
 clock = pygame.time.Clock()
 
-# plain surface
-surf = pygame.Surface((100, 200))
-surf.fill('orange')
-x = 100
+# # plain surface
+# surf = pygame.Surface((100, 200))
+# surf.fill('orange')
+# x = 100
 
 # import
 star_surf = pygame.image.load(join('..', 'images', 'star.png')).convert_alpha()
@@ -95,6 +108,9 @@ laser_surf = pygame.image.load(join('..', 'images', 'laser.png')).convert_alpha(
 
 # sprites
 all_sprites = pygame.sprite.Group()
+meteor_sprites = pygame.sprite.Group()
+laser_sprites = pygame.sprite.Group()
+
 for i in range(20):
     Star(all_sprites, star_surf)
 player = Player(all_sprites)
@@ -114,10 +130,13 @@ while running:
             x, y = randint(0, WINDOW_WIDTH), randint(-200, -100)
             Meteor(meteor_surf, (x, y), all_sprites)
 
-    # draw the game
+    # update
     all_sprites.update(dt)
+    collisions()
+
     display_surface.fill('darkgray')
     all_sprites.draw(display_surface)
+
     pygame.display.update()
 
 pygame.quit()
