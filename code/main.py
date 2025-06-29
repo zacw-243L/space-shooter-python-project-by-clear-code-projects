@@ -16,17 +16,18 @@ x = 100
 
 # importing images from parent directory's images folder
 player_surf = pygame.image.load(join('..', 'images', 'player.png')).convert_alpha()
-player_rect = player_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-player_direction = -1
+player_rect = player_surf.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+player_direction = pygame.math.Vector2(1, 1)
+player_speed = 1000
 
 star_surf = pygame.image.load(join('..', 'images', 'star.png')).convert_alpha()
 star_positions = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for _ in range(20)]
 
 meteor_surf = pygame.image.load(join('..', 'images', 'meteor.png')).convert_alpha()
-meteor_rect = meteor_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+meteor_rect = meteor_surf.get_fect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 
 laser_surf = pygame.image.load(join('..', 'images', 'laser.png')).convert_alpha()
-laser_rect = laser_surf.get_rect(bottomleft=(20, WINDOW_HEIGHT - 20))
+laser_rect = laser_surf.get_frect(bottomleft=(20, WINDOW_HEIGHT - 20))
 
 while running:
     # event loop
