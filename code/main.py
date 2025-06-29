@@ -18,11 +18,11 @@ x = 100
 # importing images from parent directory's images folder
 player_surf = pygame.image.load(join('..', 'images', 'player.png')).convert_alpha()
 player_rect = player_surf.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-player_direction = pygame.math.Vector2(1, 1)
-player_speed = 1000
+player_direction = pygame.math.Vector2()
+player_speed = 300
 
 star_surf = pygame.image.load(join('..', 'images', 'star.png')).convert_alpha()
-star_positions = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for _ in range(20)]
+star_positions = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for _ in range(30)]
 
 meteor_surf = pygame.image.load(join('..', 'images', 'meteor.png')).convert_alpha()
 meteor_rect = meteor_surf.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
@@ -36,6 +36,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_1:
+            print(1)
+        if event.type == pygame.MOUSEMOTION:
+           player_rect.center = event.pos
 
     # draw the game
     display_surface.fill('darkgray')
@@ -44,14 +48,15 @@ while running:
 
     display_surface.blit(meteor_surf, meteor_rect)
     display_surface.blit(laser_surf, laser_rect)
+    display_surface.blit(player_surf, player_rect)
 
     # player movement
-    if player_rect.bottom >= WINDOW_HEIGHT or player_rect.top <= 0:
-        player_direction.y *= -1
-    if player_rect.right >= WINDOW_WIDTH or player_rect.left <= 0:
-        player_direction.x *= -1
-    player_rect.center += player_direction * player_speed * dt
-    display_surface.blit(player_surf, player_rect)
+    # if player_rect.bottom >= WINDOW_HEIGHT or player_rect.top <= 0:
+    #     player_direction.y *= -1
+    # if player_rect.right >= WINDOW_WIDTH or player_rect.left <= 0:
+    #     player_direction.x *= -1
+    # player_rect.center += player_direction * player_speed * dt
+    # display_surface.blit(player_surf, player_rect)
 
     pygame.display.update()
 
