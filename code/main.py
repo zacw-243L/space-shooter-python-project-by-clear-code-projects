@@ -56,7 +56,7 @@ laser_surf = pygame.image.load(join('..', 'images', 'laser.png')).convert_alpha(
 laser_rect = laser_surf.get_frect(bottomleft=(20, WINDOW_HEIGHT - 20))
 
 while running:
-    dt = clock.tick() / 1000
+    dt = clock.tick() / 100
     # event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
